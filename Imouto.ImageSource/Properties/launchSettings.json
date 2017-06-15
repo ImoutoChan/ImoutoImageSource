@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Imouto.SourceImageParser": {
+      "commandName": "Project",
+      "commandLineArgs": "-i=\"C:\\Users\\pc\\Documents\\!playground\\ParseSourcePg\\input\" -o=\"C:\\Users\\pc\\Documents\\!playground\\ParseSourcePg\\output\""
+    }
+  }
+}
