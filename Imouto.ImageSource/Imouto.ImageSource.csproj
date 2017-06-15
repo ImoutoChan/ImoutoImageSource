@@ -9,7 +9,7 @@
     <Authors>ImoutoChan</Authors>
     <Company>Imouto ImageSource</Company>
     <Product>Imouto ImageSource</Product>
-    <Description>Console application for search and download source of images on iqdb</Description>
+    <Description>C# app for searching and downloading sources of images on iqdb</Description>
     <Copyright>ImoutoChan © 2017</Copyright>
   </PropertyGroup>
 
