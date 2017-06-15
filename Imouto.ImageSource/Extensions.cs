@@ -1,23 +1,35 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Imouto.ImageSource
 {
     static class Extensions
     {
-        public static string CalculateMD5Hash(this string input)
+        public static string CalculateMd5HashForString(this string inputString) 
+            => CalculateMd5HashForBytes(Encoding.ASCII.GetBytes(inputString));
+
+        public static string CalculateMd5HashForFile(this string filePath) 
+            => CalculateMd5HashForFile(new FileInfo(filePath));
+
+        public static string CalculateMd5HashForFile(this FileInfo fileInfo)
         {
-            // step 1, calculate MD5 hash from input
+            if (!fileInfo.Exists)
+            {
+                throw new ArgumentException($"{nameof(fileInfo)} doesn't exist.");
+            }
 
-            MD5 md5 = System.Security.Cryptography.MD5.Create();
+            return CalculateMd5HashForBytes(File.ReadAllBytes(fileInfo.FullName));
+        }
 
-            byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
+        public static string CalculateMd5HashForBytes(this byte[] bytes)
+        {
+            var md5 = MD5.Create();
 
-            byte[] hash = md5.ComputeHash(inputBytes);
+            byte[] hash = md5.ComputeHash(bytes);
 
-            // step 2, convert byte array to hex string
-
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             foreach (byte t in hash)
             {
@@ -25,7 +37,6 @@ namespace Imouto.ImageSource
             }
 
             return sb.ToString();
-
         }
     }
 }

@@ -167,15 +167,15 @@ namespace Imouto.ImageSource
         {
             return Task.Run(() =>
             {
-                var newFile = 
+                var newFile = new FileInfo(
                     Path.Combine(GetDestFolder(moveTo), 
                                     image.Name.Substring(0, image.Name.Length - image.Extension.Length)) 
                                         + counter 
-                                        + image.Extension;
+                                        + image.Extension);
 
-                if (File.Exists(newFile))
+                if (newFile.Exists)
                 {
-                    if (image.FullName.CalculateMD5Hash() == newFile.CalculateMD5Hash())
+                    if (image.CalculateMd5HashForFile() == newFile.CalculateMd5HashForFile())
                     {
                         _log.Add($"NOT MOVED (already exists): {image.FullName}");
                         return;
@@ -187,7 +187,7 @@ namespace Imouto.ImageSource
                     }
                 }
 
-                image.MoveTo(newFile);
+                image.MoveTo(newFile.FullName);
             });
         }
 
