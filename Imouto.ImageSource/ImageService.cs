@@ -118,7 +118,7 @@ namespace Imouto.ImageSource
 
         private async Task ParseOriginal(FileInfo fileInfo, Match original)
         {
-            var sourceParser = SourceParsetCreator.GetSourceParser(original.Source);
+            var sourceParser = SourceParserCreator.GetSourceParser(original.Source);
 
             byte[] image;
             string name;
