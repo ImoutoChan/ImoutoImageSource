@@ -3,7 +3,7 @@ using IqdbApi.Enums;
 
 namespace Imouto.ImageSource.SourceParsers
 {
-    public static class SourceParsetCreator
+    public static class SourceParserCreator
     {
         public static SourceParser GetSourceParser(Source source)
         {
@@ -17,6 +17,14 @@ namespace Imouto.ImageSource.SourceParsers
                     return new YandereSourceParser();
                 case Source.Danbooru:
                     return new DanbooruSourceParser();
+                case Source.Eshuushuu:
+                    return new EshuushuuParser();
+                case Source.Konachan:
+                    return new KonachanParser();
+                case Source.Gelbooru:
+                    return new GelbooruParser();
+                case Source.Zerochan:
+                    return new ZerochanParser();
             }
         }
     }

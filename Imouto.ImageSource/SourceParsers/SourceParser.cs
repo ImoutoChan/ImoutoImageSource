@@ -61,7 +61,7 @@ namespace Imouto.ImageSource.SourceParsers
         
         private string GetName(string origUrl)
         {
-            return origUrl.Split('/').Last();
+            return origUrl.Split('/').Last().Split('?').First();
         }
 
         private async Task<(byte[] file, string filename)> Download(string html)
