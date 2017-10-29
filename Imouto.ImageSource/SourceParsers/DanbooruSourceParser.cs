@@ -13,10 +13,12 @@ namespace Imouto.ImageSource.SourceParsers
 
         protected override string GetOriginalUrl(IHtmlDocument doc)
         {
-            var path = doc
+            var firstOrDefault = doc
                 .QuerySelectorAll("#post-information > ul > li")
-                ?.FirstOrDefault(x => x.InnerHtml.Contains("Size: "))
-                .QuerySelector("a")
+                ?.FirstOrDefault(x => x.InnerHtml.Contains("Size: "));
+
+            var path = firstOrDefault
+                ?.QuerySelector("a")
                 ?.Attributes["href"]
                 ?.Value;
 

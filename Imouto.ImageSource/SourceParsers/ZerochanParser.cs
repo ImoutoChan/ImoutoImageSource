@@ -11,7 +11,10 @@ namespace Imouto.ImageSource.SourceParsers
 
         protected override string GetOriginalUrl(IHtmlDocument doc)
         {
-            return $"{doc.QuerySelector("#large > a").Attributes["href"].Value}";
+            var full = doc.QuerySelector("#large > a")?.Attributes["href"]?.Value;
+            full = full ?? doc.QuerySelector("#large > img")?.Attributes["src"]?.Value;
+
+            return $"{full}";
         }
     }
 }

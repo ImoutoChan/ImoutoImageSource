@@ -13,7 +13,7 @@ namespace Imouto.ImageSource.SourceParsers
         protected override string GetOriginalUrl(IHtmlDocument doc)
         {
             var regex =
-                new Regex(@"/\/\/assets\.gelbooru\.com\/\/images\/[a-f\d]{2}\/[a-f\d]{2}\/[a-f\d]{32}\.(png|jpg|jpeg)/g");
+                new Regex(@"/\/\/.*\.gelbooru\.com\/\/images\/[a-f\d]{2}\/[a-f\d]{2}\/[a-f\d]{32}\.(png|jpg|jpeg)/g");
 
             var match = regex.Match(doc.QuerySelector("body").OuterHtml);
 

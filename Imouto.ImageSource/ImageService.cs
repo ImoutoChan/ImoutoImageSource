@@ -15,6 +15,8 @@ namespace Imouto.ImageSource
     class ImageService
     {
         private List<string> _log = new List<string>();
+        private List<string> _hasParents = new List<string>();
+        private List<string> _manualDownload = new List<string>();
 
         private readonly Dictionary<Source, byte> _sourcePriorities = new Dictionary<Source, byte>
         {
@@ -63,14 +65,26 @@ namespace Imouto.ImageSource
                 }
                 finally
                 {
-                    Console.WriteLine($"Progress: {++counter * 100 / total :0.0}");
+                    Console.WriteLine($"Progress: {++counter * 100.0 / total :0.0}");
                 }
                   
             }
 
-            using (var sw = new StreamWriter(new FileStream(Path.Combine(DestFolder.FullName, "log.txt"), FileMode.Create)))
+            await Save(_log, "log.txt");
+            await Save(_hasParents, "hasParents.txt");
+            await Save(_manualDownload, "manualDownload.txt");
+        }
+
+        private async Task Save(List<string> log, string filename)
+        {
+            using (var sw = new StreamWriter(new FileStream(Path.Combine(DestFolder.FullName, filename), FileMode.OpenOrCreate)))
             {
-                foreach (var line in _log)
+                await sw.WriteLineAsync();
+                await sw.WriteLineAsync();
+                await sw.WriteLineAsync($"NEW SESSION {DateTimeOffset.Now}");
+                await sw.WriteLineAsync();
+
+                foreach (var line in log)
                 {
                     await sw.WriteLineAsync(line);
                 }
@@ -131,12 +145,16 @@ namespace Imouto.ImageSource
             catch (HasParentsException e)
             {
                 _log.Add($"ERROR: HASPARRENT : {original.Url}");
+                _hasParents.Add(original.Url.StartsWith("//") ? "http:" + original.Url : original.Url);
                 await Move(fileInfo, MoveTo.HasParrent);
                 return;
             }
             catch (OriginalUrlNotFoundException e)
             {
+                // Gold account is required (loli or banned artist - danbooru) or image was removed (yande.re)
+
                 _log.Add($"ERROR: ORIGINALNOTFOUND : {original.Url}");
+                _manualDownload.Add(original.Url.StartsWith("//") ? "http:" + original.Url : original.Url);
                 await Move(fileInfo, MoveTo.OrigNotFound);
                 return;
             }
@@ -150,7 +168,7 @@ namespace Imouto.ImageSource
             var dir = Path.Combine(DestFolder.FullName, "Originals");
             CreateFolderIfNotExist(dir);
 
-            var newFilePath = Path.Combine(dir, WebUtility.UrlDecode(name));
+            var newFilePath = Path.Combine(dir, CleanFileName(WebUtility.UrlDecode(name)));
             if (File.Exists(newFilePath))
             {
                 _log.Add($"EXISTS: {original.Url}");
@@ -161,6 +179,11 @@ namespace Imouto.ImageSource
             File.WriteAllBytes(newFilePath, image);
             await Move(fileInfo, MoveTo.Found);
             _log.Add($"FOUND: {original.Url}");
+        }
+
+        private static string CleanFileName(string fileName)
+        {
+            return Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c.ToString(), string.Empty));
         }
 
         private Task Move(FileInfo image, MoveTo moveTo, string counter = "")
@@ -177,7 +200,9 @@ namespace Imouto.ImageSource
                 {
                     if (image.CalculateMd5HashForFile() == newFile.CalculateMd5HashForFile())
                     {
+                        image.Delete();
                         _log.Add($"NOT MOVED (already exists): {image.FullName}");
+                        _log.Add("Removed");
                         return;
                     }
                     else
