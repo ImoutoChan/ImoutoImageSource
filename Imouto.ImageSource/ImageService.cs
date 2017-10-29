@@ -120,8 +120,7 @@ namespace Imouto.ImageSource
 
             var goodMatches = searchResult
                 .Matches
-                .Where(x => x.MatchType == MatchType.Best 
-                            || x.MatchType == MatchType.Additional)
+                .Where(x => x.MatchType == MatchType.Best || x.MatchType == MatchType.Additional)
                 .OrderBy(x => _sourcePriorities[x.Source])
                 .ThenByDescending(x => x.Similarity);
 
