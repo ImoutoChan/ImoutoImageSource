@@ -1,4 +1,4 @@
-﻿using AngleSharp.Dom.Html;
+﻿using AngleSharp.Html.Dom;
 
 namespace Imouto.ImageSource.SourceParsers
 {
@@ -11,8 +11,8 @@ namespace Imouto.ImageSource.SourceParsers
 
         protected override string GetOriginalUrl(IHtmlDocument doc)
         {
-            var full = doc.QuerySelector("#large > a")?.Attributes["href"]?.Value;
-            full = full ?? doc.QuerySelector("#large > img")?.Attributes["src"]?.Value;
+            var full = doc.QuerySelector("#large > a.preview")?.Attributes["href"]?.Value;
+            full ??= doc.QuerySelector("#large > img")?.Attributes["src"]?.Value;
 
             return $"{full}";
         }

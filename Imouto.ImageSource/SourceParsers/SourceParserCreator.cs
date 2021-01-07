@@ -5,7 +5,7 @@ namespace Imouto.ImageSource.SourceParsers
 {
     public static class SourceParserCreator
     {
-        public static SourceParser GetSourceParser(Source source)
+        public static SourceParser GetSourceParser(Source source, string login, string apiKey)
         {
             switch (source)
             {
@@ -16,7 +16,7 @@ namespace Imouto.ImageSource.SourceParsers
                 case Source.Yandere:
                     return new YandereSourceParser();
                 case Source.Danbooru:
-                    return new DanbooruSourceParser();
+                    return new DanbooruSourceParser(login, apiKey);
                 case Source.Eshuushuu:
                     return new EshuushuuParser();
                 case Source.Konachan:

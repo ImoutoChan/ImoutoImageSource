@@ -3,3 +3,4 @@ Imouto.ImageSource/bin/
 Imouto.ImageSource/Properties/launchSettings.json
 .vs/
 Imouto.ImageSource/Properties/PublishProfiles/
+*.user

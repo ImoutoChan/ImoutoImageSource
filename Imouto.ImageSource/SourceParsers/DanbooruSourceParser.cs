@@ -1,11 +1,24 @@
-using System;
 using System.Linq;
-using AngleSharp.Dom.Html;
+using AngleSharp.Html.Dom;
 
 namespace Imouto.ImageSource.SourceParsers
 {
     public class DanbooruSourceParser : SourceParser
     {
+        private readonly string _login;
+        private readonly string _apiKey;
+
+        public DanbooruSourceParser(string login, string apiKey)
+        {
+            _login = login;
+            _apiKey = apiKey;
+        }
+
+        protected override string PrepareUrl(string url)
+        {
+            return url + $"?&login={_login}&api_key={_apiKey}";
+        }
+
         protected override bool HasParents(string html)
         {
             return html.Contains("This post belongs to a ");
@@ -22,9 +35,13 @@ namespace Imouto.ImageSource.SourceParsers
                 ?.Attributes["href"]
                 ?.Value;
 
-            return String.IsNullOrWhiteSpace(path) 
-                ? String.Empty 
-                : "https://danbooru.donmai.us" + path;
+            if (string.IsNullOrWhiteSpace(path))
+                return string.Empty;
+
+            if (path.Contains("donmai.us"))
+                return path;
+
+            return "https://danbooru.donmai.us" + path;
         }
     }
 }
